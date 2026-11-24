@@ -1,0 +1,218 @@
+<main class="call-page">
+  <section class="call-card" aria-labelledby="call-title">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="RobinRoom home">
+        <span class="brand-mark" aria-hidden="true">r</span>
+        <span>robin<span class="brand-light">room</span></span>
+      </a>
+
+      <div class="secure-label">
+        <span class="secure-dot" aria-hidden="true"></span>
+        Private room
+      </div>
+    </header>
+
+    <div class="call-content">
+      <p class="eyebrow">
+        <span class="eyebrow-pulse" aria-hidden="true"></span>
+        @if (livekit.connected()) {
+          You're on a call
+        } @else if (livekit.connecting()) {
+          Connecting securely
+        } @else {
+          YOUR PERSONAL AI CALL
+        }
+      </p>
+
+      <div class="contact-stage" [class.is-connected]="livekit.connected()">
+        <div class="orb-glow" aria-hidden="true"></div>
+        <div class="contact-orb" aria-hidden="true">
+          <span class="orb-letter">r</span>
+          <span class="orb-ring orb-ring-one"></span>
+          <span class="orb-ring orb-ring-two"></span>
+        </div>
+
+        <div class="self-preview" [class.camera-off]="mediaReady() && !livekit.cameraEnabled()">
+          <video
+            #preview
+            autoplay
+            muted
+            playsinline
+            class="camera-preview"
+            [class.video-hidden]="mediaReady() && !livekit.cameraEnabled()"
+            aria-label="Your camera preview"
+          ></video>
+          @if (!mediaReady()) {
+            <div class="preview-prompt" aria-hidden="true">
+              <svg viewBox="0 0 24 24" focusable="false">
+                <path
+                  d="M15 10l4.5-3A1 1 0 0 1 21 7.8v8.4a1 1 0 0 1-1.5.8L15 14M4 7h9a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z"
+                />
+              </svg>
+              <span>Camera preview</span>
+            </div>
+          } @else if (!livekit.cameraEnabled()) {
+            <span class="preview-avatar" aria-hidden="true">Y</span>
+          }
+          <span class="preview-caption">You</span>
+        </div>
+      </div>
+
+      <div class="contact-info">
+        <h1 id="call-title">Robin</h1>
+        <p>your thoughtful AI companion</p>
+        <div class="connection-status" aria-live="polite">
+          @if (livekit.connected()) {
+            <span class="status-dot connected-dot" aria-hidden="true"></span>
+            Connected · you're all set
+          } @else if (livekit.connecting()) {
+            <span class="status-dot connecting-dot" aria-hidden="true"></span>
+            Finding a quiet place to talk…
+          } @else if (mediaReady()) {
+            <span class="status-dot ready-dot" aria-hidden="true"></span>
+            Your camera and mic are ready
+          } @else {
+            <span class="status-dot" aria-hidden="true"></span>
+            A little space, just for you
+          }
+        </div>
+      </div>
+
+      <div class="call-controls" aria-label="Call controls">
+        <button
+          class="control-button"
+          [class.control-active]="mediaReady() && livekit.microphoneEnabled()"
+          [class.control-muted]="mediaReady() && !livekit.microphoneEnabled()"
+          [disabled]="!mediaReady()"
+          (click)="toggleMicrophone()"
+          [attr.aria-label]="livekit.microphoneEnabled() ? 'Mute microphone' : 'Unmute microphone'"
+          [attr.aria-pressed]="mediaReady() && livekit.microphoneEnabled()"
+        >
+          @if (livekit.microphoneEnabled()) {
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="9" y="2" width="6" height="12" rx="3" />
+              <path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8" />
+            </svg>
+          } @else {
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="m3 3 18 18M9 9v3a3 3 0 0 0 5.1 2.1M15 9V5a3 3 0 0 0-5.8-1M5 10v2a7 7 0 0 0 11.9 5M19 10v2a7 7 0 0 1-.4 2.3M12 19v3m-4 0h8"
+              />
+            </svg>
+          }
+          <span>{{ livekit.microphoneEnabled() ? 'Mute' : 'Unmute' }}</span>
+        </button>
+
+        <button
+          class="control-button"
+          [class.control-active]="mediaReady() && livekit.cameraEnabled()"
+          [class.control-muted]="mediaReady() && !livekit.cameraEnabled()"
+          [disabled]="!mediaReady()"
+          (click)="toggleCamera()"
+          [attr.aria-label]="livekit.cameraEnabled() ? 'Turn camera off' : 'Turn camera on'"
+          [attr.aria-pressed]="mediaReady() && livekit.cameraEnabled()"
+        >
+          @if (livekit.cameraEnabled()) {
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <rect x="3" y="6" width="13" height="12" rx="3" />
+              <path d="m16 10 5-3v10l-5-3" />
+            </svg>
+          } @else {
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="m3 3 18 18M10 6h3a3 3 0 0 1 3 3v.5l5-3v10l-2.2-1.3M16 16a3 3 0 0 1-3 2H6a3 3 0 0 1-3-3V9a3 3 0 0 1 .9-2.1"
+              />
+            </svg>
+          }
+          <span>{{ livekit.cameraEnabled() ? 'Camera' : 'Camera off' }}</span>
+        </button>
+
+        @if (livekit.cameraDevices().length > 1) {
+          <button
+            class="control-button"
+            [disabled]="!mediaReady() || !livekit.cameraEnabled() || livekit.switchingCamera()"
+            (click)="switchCamera()"
+            [attr.aria-label]="
+              livekit.cameraFacing() === 'back' ? 'Switch to front camera' : 'Switch to back camera'
+            "
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M20 7h-3l-2-2H9L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2Z"
+              />
+              <circle cx="12" cy="13" r="4" />
+              <path d="M4 3h5M4 3l2-2M4 3l2 2" />
+            </svg>
+            <span>{{ livekit.switchingCamera() ? 'Switching…' : 'Flip camera' }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="primary-actions">
+        @if (!mediaReady()) {
+          <button
+            class="call-button setup-button"
+            (click)="initializeMedia()"
+            [disabled]="loadingMedia()"
+          >
+            @if (loadingMedia()) {
+              <span class="button-spinner" aria-hidden="true"></span>
+              Getting things ready…
+            } @else {
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M12 18a6 6 0 0 0 6-6V8a6 6 0 0 0-12 0v4a6 6 0 0 0 6 6Zm0 0v4m-4 0h8M5 11v1a7 7 0 0 0 14 0v-1"
+                />
+              </svg>
+              Allow camera &amp; microphone
+            }
+          </button>
+        } @else if (livekit.connected()) {
+          <button class="call-button hangup-button" (click)="leaveRoom()">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path
+                d="M4.5 15.5a12 12 0 0 1 15 0l1.5 1.2a1 1 0 0 1 .2 1.4l-1.8 2.3a1 1 0 0 1-1.2.3l-3.2-1.4a1 1 0 0 1-.6-.9v-2.1a14 14 0 0 0-4.8 0v2.1a1 1 0 0 1-.6.9l-3.2 1.4a1 1 0 0 1-1.2-.3L2.8 18a1 1 0 0 1 .2-1.4l1.5-1.1Z"
+              />
+            </svg>
+            End call
+          </button>
+        } @else {
+          <button
+            class="call-button start-button"
+            (click)="joinRoom()"
+            [disabled]="livekit.connecting()"
+          >
+            @if (livekit.connecting()) {
+              <span class="button-spinner" aria-hidden="true"></span>
+              Connecting…
+            } @else {
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path
+                  d="M4.5 15.5a12 12 0 0 1 15 0l1.5 1.2a1 1 0 0 1 .2 1.4l-1.8 2.3a1 1 0 0 1-1.2.3l-3.2-1.4a1 1 0 0 1-.6-.9v-2.1a14 14 0 0 0-4.8 0v2.1a1 1 0 0 1-.6.9l-3.2 1.4a1 1 0 0 1-1.2-.3L2.8 18a1 1 0 0 1 .2-1.4l1.5-1.1Z"
+                />
+              </svg>
+              Start call
+            }
+          </button>
+        }
+      </div>
+
+      @if (error() || livekit.connectionError() || livekit.cameraSwitchError()) {
+        <p class="error-message" role="alert">
+          {{ error() || livekit.connectionError() || livekit.cameraSwitchError() }}
+        </p>
+      }
+    </div>
+
+    <footer class="call-footer">
+      <span>Take a breath. Robin is here.</span>
+      <span class="footer-lock" aria-label="Your room is private">
+        <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <rect x="3" y="7" width="10" height="7" rx="2" />
+          <path d="M5 7V5a3 3 0 0 1 6 0v2" />
+        </svg>
+        Private &amp; secure
+      </span>
+    </footer>
+  </section>
+</main>

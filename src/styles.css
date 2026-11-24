@@ -1,0 +1,38 @@
+:root {
+  color-scheme: dark;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0c0d12;
+  font-optical-sizing: auto;
+}
+
+* { box-sizing: border-box; }
+
+html, body { width: 100%; min-width: 320px; min-height: 100%; margin: 0; }
+
+body { min-height: 100svh; }
+
+button { -webkit-tap-highlight-color: transparent; }
+
+button:focus-visible, a:focus-visible { outline: 3px solid #c4baff; outline-offset: 4px; }
+
+@keyframes orb-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes pulse { 50% { opacity: .48; transform: scale(.78); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}
+
+@media (max-height: 720px) and (min-width: 521px) {
+  .call-page { padding-block: 16px; }
+  .call-card { min-height: calc(100svh - 32px); }
+  .call-content { padding-block: 22px 20px; }
+  .contact-stage { height: 210px; margin-top: 10px; }
+  .contact-orb { width: 136px; height: 136px; }
+  .orb-letter { font-size: 80px; }
+  .call-controls { margin-top: 20px; }
+}
