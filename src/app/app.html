@@ -34,14 +34,15 @@
 
         <div class="self-preview" [class.camera-off]="mediaReady() && !livekit.cameraEnabled()">
           <video
-            #preview
-            autoplay
-            muted
-            playsinline
-            class="camera-preview"
-            [class.video-hidden]="mediaReady() && !livekit.cameraEnabled()"
-            aria-label="Your camera preview"
-          ></video>
+  #preview
+  autoplay
+  muted
+  playsinline
+  class="camera-preview"
+  [class.mirrored]="livekit.cameraFacing() !== 'back'"
+  [class.video-hidden]="mediaReady() && !livekit.cameraEnabled()"
+  aria-label="Your camera preview"
+></video>
           @if (!mediaReady()) {
             <div class="preview-prompt" aria-hidden="true">
               <svg viewBox="0 0 24 24" focusable="false">
